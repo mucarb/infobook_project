@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.murilo.infobook.entities.Usuario;
 import com.murilo.infobook.repositories.UsuarioRepository;
+import com.murilo.infobook.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class UsuarioService {
@@ -16,7 +17,10 @@ public class UsuarioService {
 	
 	public Usuario searchById(Integer id) {
 		Optional<Usuario> obj = usuarioRepository.findById(id);		
-		return obj.orElse(null);
+		return obj.orElseThrow(() -> new ObjectNotFoundException(
+				"Usuário: objeto não foi encontrado, ID: "
+				+ id + ", Tipo: "
+				+ Usuario.class.getName()));
 	}
 	
 }
