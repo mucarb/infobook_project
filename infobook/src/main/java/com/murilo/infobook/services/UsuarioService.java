@@ -12,6 +12,7 @@ import com.murilo.infobook.entities.Usuario;
 import com.murilo.infobook.repositories.CidadeRepository;
 import com.murilo.infobook.repositories.EnderecoRepository;
 import com.murilo.infobook.repositories.UsuarioRepository;
+import com.murilo.infobook.services.exceptions.DataIntegrityViolationException;
 import com.murilo.infobook.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -40,6 +41,8 @@ public class UsuarioService {
 	}
 
 	public Usuario fromDto(UsuarioNewDTO objNewDto) {
+		validateUniqueData(objNewDto);
+
 		Cidade cidade = cidadeRepository.getById(objNewDto.getCidadeId());
 
 		Endereco endereco = new Endereco(null, objNewDto.getLogradouro(), objNewDto.getNumero(),
@@ -60,6 +63,24 @@ public class UsuarioService {
 		}
 
 		return usuario;
+	}
+
+	private void validateUniqueData(UsuarioNewDTO objNewDto) {
+		if (uniqueCpfValidation(objNewDto.getCpf())) {
+			throw new DataIntegrityViolationException("CPF já existente na base de dados!");
+		}
+		
+		if(uniqueEmailValidation(objNewDto.getEmail())) {
+			throw new DataIntegrityViolationException("Email já existente na base de dados!");
+		}
+	}
+
+	private boolean uniqueCpfValidation(String cpf) {
+		return usuarioRepository.findByCpf(cpf) != null;
+	}
+	
+	private boolean uniqueEmailValidation(String email) {
+		return usuarioRepository.findByEmail(email) != null;
 	}
 
 }

@@ -6,46 +6,49 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CPF;
 
-public class UsuarioNewDTO implements Serializable{
+public class UsuarioNewDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@NotEmpty(message = "Preenchimento do campo NOME obrigatório")
+	@Length(min = 3, max = 120, message = "Nome deve ser entre 3 e 120 caracteres")
 	private String nome;
 
 	@NotEmpty(message = "Preenchimento do campo CPF obrigatório")
 	@CPF(message = "CPF inválido")
 	private String cpf;
-	
+
 	@NotEmpty(message = "Preenchimento do campo EMAIL obrigatório")
-	@Email
+	@Email(message = "Email inválido")
 	private String email;
-	
+
 	@NotEmpty(message = "Preenchimento do campo SENHA obrigatório")
+	@Length(min = 8, message = "Senha deve no minimo ter 8 caracteres")
 	private String senha;
-	
+
 	@NotEmpty(message = "Preenchimento do campo LOGRADOURO obrigatório")
 	private String logradouro;
-	
+
 	@NotEmpty(message = "Preenchimento do campo NÚMERO obrigatório")
 	private String numero;
 	private String complemento;
-	
+
 	@NotEmpty(message = "Preenchimento do campo BAIRRO obrigatório")
 	private String bairro;
-	
+
 	@NotEmpty(message = "Preenchimento do campo CEP obrigatório")
 	private String cep;
-	
+
 	@NotNull(message = "Campo CIDADE não informado")
 	private Integer cidadeId;
-	
+
 	@NotEmpty(message = "Preenchimento do campo TELEFONE obrigatório")
 	private String telefone1;
 	private String telefone2;
 	private String telefone3;
-	
+
 	public UsuarioNewDTO() {
 	}
 
@@ -152,5 +155,5 @@ public class UsuarioNewDTO implements Serializable{
 	public void setTelefone3(String telefone3) {
 		this.telefone3 = telefone3;
 	}
-	
+
 }
