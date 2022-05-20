@@ -2,19 +2,46 @@ package com.murilo.infobook.dtos;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.br.CPF;
+
 public class UsuarioNewDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 
+	@NotEmpty(message = "Preenchimento do campo NOME obrigatório")
 	private String nome;
+
+	@NotEmpty(message = "Preenchimento do campo CPF obrigatório")
+	@CPF(message = "CPF inválido")
 	private String cpf;
+	
+	@NotEmpty(message = "Preenchimento do campo EMAIL obrigatório")
+	@Email
 	private String email;
-	private String senha;	
+	
+	@NotEmpty(message = "Preenchimento do campo SENHA obrigatório")
+	private String senha;
+	
+	@NotEmpty(message = "Preenchimento do campo LOGRADOURO obrigatório")
 	private String logradouro;
+	
+	@NotEmpty(message = "Preenchimento do campo NÚMERO obrigatório")
 	private String numero;
 	private String complemento;
+	
+	@NotEmpty(message = "Preenchimento do campo BAIRRO obrigatório")
 	private String bairro;
+	
+	@NotEmpty(message = "Preenchimento do campo CEP obrigatório")
 	private String cep;
+	
+	@NotNull(message = "Campo CIDADE não informado")
 	private Integer cidadeId;
+	
+	@NotEmpty(message = "Preenchimento do campo TELEFONE obrigatório")
 	private String telefone1;
 	private String telefone2;
 	private String telefone3;

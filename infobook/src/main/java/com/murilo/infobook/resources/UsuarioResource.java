@@ -2,6 +2,8 @@ package com.murilo.infobook.resources;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +32,7 @@ public class UsuarioResource {
 	}
 
 	@PostMapping
-	public ResponseEntity<Void> insert(@RequestBody UsuarioNewDTO objNewDto) {
+	public ResponseEntity<Void> insert(@Valid @RequestBody UsuarioNewDTO objNewDto) {
 		Usuario obj = usuarioService.fromDto(objNewDto);
 		obj = usuarioService.insert(obj);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
