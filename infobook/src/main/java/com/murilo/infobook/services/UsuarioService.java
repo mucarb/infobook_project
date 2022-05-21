@@ -3,6 +3,7 @@ package com.murilo.infobook.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.murilo.infobook.dtos.UsuarioNewDTO;
@@ -27,6 +28,9 @@ public class UsuarioService {
 	@Autowired
 	private EnderecoRepository enderecoRepository;
 
+	@Autowired
+	private BCryptPasswordEncoder pe;
+
 	public Usuario searchById(Integer id) {
 		Optional<Usuario> obj = usuarioRepository.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
@@ -49,7 +53,7 @@ public class UsuarioService {
 				objNewDto.getComplemento(), objNewDto.getBairro(), objNewDto.getCep(), cidade);
 
 		Usuario usuario = new Usuario(null, objNewDto.getNome(), objNewDto.getCpf(), objNewDto.getEmail(),
-				objNewDto.getSenha(), endereco);
+				pe.encode(objNewDto.getSenha()), endereco);
 
 		endereco.setUsuario(usuario);
 
@@ -69,8 +73,8 @@ public class UsuarioService {
 		if (uniqueCpfValidation(objNewDto.getCpf())) {
 			throw new DataIntegrityViolationException("CPF já existente na base de dados!");
 		}
-		
-		if(uniqueEmailValidation(objNewDto.getEmail())) {
+
+		if (uniqueEmailValidation(objNewDto.getEmail())) {
 			throw new DataIntegrityViolationException("Email já existente na base de dados!");
 		}
 	}
@@ -78,7 +82,7 @@ public class UsuarioService {
 	private boolean uniqueCpfValidation(String cpf) {
 		return usuarioRepository.findByCpf(cpf) != null;
 	}
-	
+
 	private boolean uniqueEmailValidation(String email) {
 		return usuarioRepository.findByEmail(email) != null;
 	}
