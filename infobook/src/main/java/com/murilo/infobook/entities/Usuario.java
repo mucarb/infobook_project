@@ -49,6 +49,13 @@ public class Usuario implements Serializable {
 		this.endereco = endereco;
 	}
 
+	public Usuario(Integer id, String nome, String email, Endereco endereco) {
+		this.id = id;
+		this.nome = nome;
+		this.email = email;
+		this.endereco = endereco;
+	}
+
 	public Integer getId() {
 		return id;
 	}

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.murilo.infobook.dtos.UsuarioDTO;
 import com.murilo.infobook.dtos.UsuarioNewDTO;
 import com.murilo.infobook.entities.Cidade;
 import com.murilo.infobook.entities.Endereco;
@@ -44,6 +45,18 @@ public class UsuarioService {
 		return obj;
 	}
 
+	public Usuario update(Usuario obj) {
+		Usuario oldObj = usuarioRepository.getById(obj.getId());
+		Usuario objAux = usuarioRepository.findByEmail(obj.getEmail());
+		
+		if (uniqueEmailValidation(obj.getEmail()) && objAux.getId() != obj.getId()) {
+			throw new DataIntegrityViolationException("Email já existente na base de dados!");
+		}
+
+		updateData(oldObj, obj);
+		return usuarioRepository.save(oldObj);
+	}
+
 	public Usuario fromDto(UsuarioNewDTO objNewDto) {
 		validateUniqueData(objNewDto);
 
@@ -67,6 +80,36 @@ public class UsuarioService {
 		}
 
 		return usuario;
+	}
+
+	public Usuario fromDto(UsuarioDTO objDto) {
+		Cidade cidade = cidadeRepository.getById(objDto.getCidadeId());
+
+		Endereco endereco = new Endereco(null, objDto.getLogradouro(), objDto.getNumero(), objDto.getComplemento(),
+				objDto.getBairro(), objDto.getCep(), cidade);
+
+		Usuario usuario = new Usuario(null, objDto.getNome(), objDto.getEmail(), endereco);
+
+		endereco.setUsuario(usuario);
+
+		usuario.getTelefones().add(objDto.getTelefone1());
+
+		if (objDto.getTelefone2() != null) {
+			usuario.getTelefones().add(objDto.getTelefone2());
+		}
+		if (objDto.getTelefone3() != null) {
+			usuario.getTelefones().add(objDto.getTelefone2());
+		}
+
+		return usuario;
+	}
+
+	private void updateData(Usuario oldObj, Usuario obj) {
+		oldObj.setNome(obj.getNome());
+		oldObj.setEmail(obj.getEmail());
+		oldObj.setEndereco(obj.getEndereco());
+		oldObj.getEndereco().setId(obj.getId());
+		oldObj.setTelefones(obj.getTelefones());
 	}
 
 	private void validateUniqueData(UsuarioNewDTO objNewDto) {
